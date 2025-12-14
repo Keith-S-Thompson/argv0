@@ -23,3 +23,34 @@ to prevent programs being invoked with `argv[0] == NULL`.
 
 TODO: Spin up an older or different OS and see if I can reproduce
 the old behavior.
+
+Done.  With Ubuntu 10.04 LTS, running `./caller` produces this output from `./callee`:
+
+```
+argc = 0
+argv[0] = NULL
+```
+
+With Ubuntu 24.04 LTS, this is the output:
+
+```
+argc = 1
+argv[0] = ""
+argv[1] = NULL
+```
+
+And I've tracked down the change to commit
+`dcd46d897adb` in the Linux kernel.  It refers to
+[CVE-2021-4034](https://nvd.nist.gov/vuln/detail/cve-2021-4034).
+Apparently `pkexec` would try to travers arguments  starting at
+`argv[1]`; if `argc1 were 0, then `argv[1]` would point to `envp[0]`.
+
+```
+commit dcd46d897adb70d63e025f175a00a89797d31a43
+Author: Kees Cook <kees@kernel.org>
+Date:   2022-01-31 16:09:47 -0800
+
+    exec: Force single empty string when argv is empty
+```
+
+The fix was released in kernels 5.18, 5.19, and 6.0.
