@@ -53,4 +53,14 @@ Date:   2022-01-31 16:09:47 -0800
     exec: Force single empty string when argv is empty
 ```
 
-The fix was released in kernels 5.18, 5.19, and 6.0.
+The fix was released in kernels 5.18, 5.19, and 6.0, and may have
+been backported to other systems.
+
+For non-Linux systems:
+
+- On Cygwin, the callee is not invoked.
+- On Android/Termux, I get the same output as on recent Linux systems.  
+  This is actually Linux-based, version 5.4.274-moto-g7fd1d430bf42.
+- On FreeBSD 14.2, I get the same output as on recent Linux systems.
+- On NetBSD 10.1, I get the bad output of older Linux systems, indicating
+  possible vulnerability to a bug.
