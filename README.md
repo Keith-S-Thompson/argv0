@@ -52,5 +52,12 @@ For non-Linux systems:
   This is actually Linux-based, version 5.4.274-moto-g7fd1d430bf42.
 - On FreeBSD 14.2, I get the same output as on recent Linux systems.
 - On NetBSD 10.1, I get the bad output of older Linux systems,
-  indicating a possible vulnerability to a bug.  I've submitted a
-  [bug report](https://gnats.netbsd.org/cgi-bin/query-pr-single.pl?number=59837).
+  indicating a possible vulnerability to a bug.  I've submitted a bug report,
+  [kern/59837](https://gnats.netbsd.org/cgi-bin/query-pr-single.pl?number=59837).  
+  A comment points to an earlier bug report,
+  [kern/56673](https://gnats.netbsd.org/cgi-bin/query-pr-single.pl?number=56673).  
+  Much of the discussion there suggests that the real problem is any
+  applications that assume `argv[0] != NULL`.  Apparently an existing
+  NetBSD change disallows `argv[0] == NULL` for set*id binaries.
+
+Another discussion of this issue: <https://lwn.net/Articles/882799/>
