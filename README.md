@@ -1,37 +1,26 @@
-A thread on comp.lang.c in 2011, subject "Teaching C", digressed into
-a discussion of whether `argv[0]` can be a null pointer.
+A thread on comp.lang.c in 2011, subject "Teaching C", digressed into a
+discussion of whether `argv[0]` can be a null pointer.  The C standard
+allows this, but normally `argv[0]` will be a non-null pointer to a
+string representing the *program name*.
 
 See `article.txt` for a copy of an article I posted on that thread.
 
-`caller.c` invokes `./callee`, attempting to set its `argv[0]` to
+Instructions:
+
+- Run `make` to create `caller` and `callee executables.
+- Run `./caller`, which should invoke `./callee`.
+
+`caller` invokes `./callee`, attempting to set its `argv[0]` to
 `NULL`.  `callee.c` reports its `argc` and `argv` values.
 
-The behavior reported at the time was that `callee` would have  
-`argc == 0 && argv[0] == NULL`.
-
-I've been unable to reproduce this behavior on Ubuntu 24.04.3 LTS.
-The output of `callee` when invoked by `caller` is:
-
-```
-argc = 1
-argv[0] = ""
-argv[1] = NULL
-```
-
-My best guess is that the system (glibc? the kernel?) has been updated
-to prevent programs being invoked with `argv[0] == NULL`.
-
-TODO: Spin up an older or different OS and see if I can reproduce
-the old behavior.
-
-Done.  With Ubuntu 10.04 LTS, running `./caller` produces this output from `./callee`:
+The behavior reported at the time was the output would be:
 
 ```
 argc = 0
 argv[0] = NULL
 ```
 
-With Ubuntu 24.04 LTS, this is the output:
+With Ubuntu 24.04.3 LTS, the output is:
 
 ```
 argc = 1
@@ -39,10 +28,10 @@ argv[0] = ""
 argv[1] = NULL
 ```
 
-And I've tracked down the change to commit
-`dcd46d897adb` in the Linux kernel.  It refers to
+I've tracked down the change to commit `dcd46d897adb`
+in the Linux kernel.  It refers to
 [CVE-2021-4034](https://nvd.nist.gov/vuln/detail/cve-2021-4034).
-Apparently `pkexec` would try to travers arguments  starting at
+Apparently `pkexec` would try to travers arguments starting at
 `argv[1]`; if `argc1 were 0, then `argv[1]` would point to `envp[0]`.
 
 ```
@@ -53,8 +42,8 @@ Date:   2022-01-31 16:09:47 -0800
     exec: Force single empty string when argv is empty
 ```
 
-The fix was released in kernels 5.18, 5.19, and 6.0, and may have
-been backported to other systems.
+The fix was released in kernels 5.18, 5.19, and 6.0, and has been
+backported to other systems.
 
 For non-Linux systems:
 
@@ -63,4 +52,4 @@ For non-Linux systems:
   This is actually Linux-based, version 5.4.274-moto-g7fd1d430bf42.
 - On FreeBSD 14.2, I get the same output as on recent Linux systems.
 - On NetBSD 10.1, I get the bad output of older Linux systems, indicating
-  possible vulnerability to a bug.
+  possible vulnerability to a bug.  I'll submit a bug report.
