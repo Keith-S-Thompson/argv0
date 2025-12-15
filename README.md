@@ -51,5 +51,6 @@ For non-Linux systems:
 - On Android/Termux, I get the same output as on recent Linux systems.  
   This is actually Linux-based, version 5.4.274-moto-g7fd1d430bf42.
 - On FreeBSD 14.2, I get the same output as on recent Linux systems.
-- On NetBSD 10.1, I get the bad output of older Linux systems, indicating
-  possible vulnerability to a bug.  I'll submit a bug report.
+- On NetBSD 10.1, I get the bad output of older Linux systems,
+  indicating a possible vulnerability to a bug.  I've submitted a
+  [bug report](https://gnats.netbsd.org/cgi-bin/query-pr-single.pl?number=59837).
