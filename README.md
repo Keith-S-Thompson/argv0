@@ -47,10 +47,13 @@ backported to other systems.
 
 For non-Linux systems:
 
-- On Cygwin, the callee is not invoked.
+- On Cygwin, execve() fails and sets errno=7 (E2BIG), and the callee  
+  is not invoked.
 - On Android/Termux, I get the same output as on recent Linux systems.  
   This is actually Linux-based, version 5.4.274-moto-g7fd1d430bf42.
-- On FreeBSD 14.2, I get the same output as on recent Linux systems.
+- On FreeBSD 14.2, I get the same output as on recent Linux systems.  
+  See this change:
+  <https://github.com/freebsd/freebsd-src/commit/773fa8cd136a5775241c3e3a70f1997633ebeedf>
 - On NetBSD 10.1, I get the bad output of older Linux systems,
   indicating a possible vulnerability to a bug.  I've submitted a bug report,
   [kern/59837](https://gnats.netbsd.org/cgi-bin/query-pr-single.pl?number=59837).  
@@ -61,3 +64,12 @@ For non-Linux systems:
   NetBSD change disallows `argv[0] == NULL` for set*id binaries.
 
 Another discussion of this issue: <https://lwn.net/Articles/882799/>
+
+MS Windows apparently guarantees that `argc > 0` and `argv[0] != NULL`.
+
+<https://learn.microsoft.com/en-us/cpp/c-language/argument-description?view=msvc-170>
+
+> The `argc` parameter in the `main` and `wmain` functions is an
+> integer specifying how many arguments are passed to the program
+> from the command line. Since the program name is considered an
+> argument, the value of `argc` is at least one.
