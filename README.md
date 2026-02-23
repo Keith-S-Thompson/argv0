@@ -7,7 +7,7 @@ See `article.txt` for a copy of an article I posted on that thread.
 
 Instructions:
 
-- Run `make` to create `caller` and `callee executables.
+- Run `make` to create `caller` and `callee` executables.
 - Run `./caller`, which should invoke `./callee`.
 
 `caller` invokes `./callee`, attempting to set its `argv[0]` to
@@ -32,7 +32,7 @@ I've tracked down the change to commit `dcd46d897adb`
 in the Linux kernel.  It refers to
 [CVE-2021-4034](https://nvd.nist.gov/vuln/detail/cve-2021-4034).
 Apparently `pkexec` would try to travers arguments starting at
-`argv[1]`; if `argc1 were 0, then `argv[1]` would point to `envp[0]`.
+`argv[1]`; if `argc` were 0, then `argv[1]` would point to `envp[0]`.
 
 ```
 commit dcd46d897adb70d63e025f175a00a89797d31a43
